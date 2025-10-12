@@ -1,0 +1,2 @@
+rootProject.name = "WhatsOrder"
+include ':app'

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WhatsOrder</string>
+    <string name="twa_url">https://whats-order-osr3.vercel.app/dashboard/</string>
+</resources>

@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         
         // Create and configure the banner ad
         adView = AdView(this)
-        adView.adSize = AdSize.BANNER
+        adView.setAdSize(AdSize.BANNER)
         adView.adUnitId = "ca-app-pub-5538218540896625/8498698237"
         
         // Add the banner ad to the layout

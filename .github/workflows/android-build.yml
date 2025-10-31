@@ -31,8 +31,8 @@ jobs:
     - name: Install Android SDK Components
       run: |
         sdkmanager "platform-tools"
-        sdkmanager "platforms;android-34"
-        sdkmanager "build-tools;34.0.0"
+        sdkmanager "platforms;android-35"
+        sdkmanager "build-tools;35.0.0"
     
     - name: Grant execute permission for gradlew
       run: |

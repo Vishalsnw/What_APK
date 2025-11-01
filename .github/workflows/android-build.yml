@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK & AAB
 
 on:
   push:
@@ -79,6 +79,15 @@ jobs:
         fi
         ./gradlew assembleRelease --stacktrace
     
+    - name: Build Signed Release AAB (Android App Bundle)
+      env:
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || 'whatsorder123' }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS || 'whatsorder-twa' }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'whatsorder123' }}
+      run: |
+        cd VercelAdTWA/VercelAdTWA
+        ./gradlew bundleRelease --stacktrace
+    
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
@@ -93,14 +102,25 @@ jobs:
         path: VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk
         retention-days: 90
     
-    - name: Get APK Info
+    - name: Upload Signed Release AAB
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release-bundle
+        path: VercelAdTWA/VercelAdTWA/app/build/outputs/bundle/release/app-release.aab
+        retention-days: 90
+    
+    - name: Get Build Info
       run: |
         echo "=== Build Complete ==="
+        echo ""
         echo "Debug APK:"
         ls -lh VercelAdTWA/VercelAdTWA/app/build/outputs/apk/debug/app-debug.apk || echo "Not found"
         echo ""
         echo "Release APK (Signed):"
         ls -lh VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk || echo "Not found"
+        echo ""
+        echo "Release AAB (Signed):"
+        ls -lh VercelAdTWA/VercelAdTWA/app/build/outputs/bundle/release/app-release.aab || echo "Not found"
         echo ""
         if command -v apksigner &> /dev/null; then
           echo "=== Verifying APK Signature ==="
@@ -114,15 +134,24 @@ jobs:
         files: |
           VercelAdTWA/VercelAdTWA/app/build/outputs/apk/debug/app-debug.apk
           VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk
+          VercelAdTWA/VercelAdTWA/app/build/outputs/bundle/release/app-release.aab
         body: |
           ## WhatsOrder TWA Release
           
           ### Files
           - `app-debug.apk` - Debug build for testing
-          - `app-release.apk` - Signed release build for distribution
+          - `app-release.apk` - Signed release APK for sideloading/direct distribution
+          - `app-release.aab` - Signed release AAB for Google Play Store upload
           
           ### Installation
-          Download the APK and install on your Android device.
-          You may need to enable "Install from unknown sources" in your device settings.
+          
+          **APK (Direct Install)**:
+          - Download `app-release.apk`
+          - Install on your Android device
+          - Enable "Install from unknown sources" if prompted
+          
+          **AAB (Play Store)**:
+          - Upload `app-release.aab` to Google Play Console
+          - This is the preferred format for Play Store distribution
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

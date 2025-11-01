@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -28,16 +29,22 @@ class LauncherActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_launcher)
         
-        // Initialize Mobile Ads SDK
-        MobileAds.initialize(this) {}
-        
-        // Load the interstitial ad
-        loadInterstitialAd()
-        
-        // Set a timeout to show main activity even if ad fails to load
-        timeoutHandler.postDelayed(timeoutRunnable, 3000) // 3 second timeout
+        try {
+            setContentView(R.layout.activity_launcher)
+            
+            // Initialize Mobile Ads SDK
+            MobileAds.initialize(this) {}
+            
+            // Load the interstitial ad
+            loadInterstitialAd()
+            
+            // Set a timeout to show main activity even if ad fails to load
+            timeoutHandler.postDelayed(timeoutRunnable, 3000) // 3 second timeout
+        } catch (e: Exception) {
+            Log.e("LauncherActivity", "Error in onCreate", e)
+            showMainActivity()
+        }
     }
     
     private fun loadInterstitialAd() {

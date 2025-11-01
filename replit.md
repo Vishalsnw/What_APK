@@ -14,6 +14,9 @@ This is an Android TWA (Trusted Web Activity) project that wraps a web applicati
 - ✅ GitHub Actions workflow for automated APK builds
 - ✅ Comprehensive README with build instructions
 - ✅ Documentation server running on port 5000
+- ✅ **NEW:** Signed release APK build configuration
+- ✅ **NEW:** Java JDK and Android tools installed
+- ✅ **NEW:** Automated build script for signed releases
 
 ## Architecture
 ### Components
@@ -43,24 +46,37 @@ A Python documentation server runs on port 5000 to display:
 Access it via the webview panel or at the Replit URL.
 
 ### Building APKs
-**Note**: Building Android APKs directly in Replit is not recommended due to Android SDK size and complexity.
+**You can now build signed release APKs directly in Replit!**
 
-**Recommended approach**:
-1. **Use GitHub Actions** (automated):
+**Quick Build (Recommended)**:
+```bash
+bash build_signed_apk.sh
+```
+
+This will:
+- Create a signing keystore automatically
+- Build a signed release APK ready for distribution
+- Output the APK location
+
+**Alternative build methods**:
+1. **Manual build**:
+   ```bash
+   cd VercelAdTWA/VercelAdTWA
+   chmod +x gradlew
+   ./gradlew assembleRelease
+   ```
+
+2. **GitHub Actions** (automated):
    - Push code to GitHub
    - GitHub Actions builds APKs automatically
    - Download from Actions artifacts
 
-2. **Local build** (if you have Android SDK):
+3. **Debug build**:
    ```bash
-   cd VercelAdTWA/VercelAdTWA
-   chmod +x gradlew
-   ./gradlew assembleDebug
+   bash build_apk.sh
    ```
 
-3. **Export and build elsewhere**:
-   - Use Replit for code editing
-   - Export to local Android Studio for building
+**Note**: See `README_SIGNING.md` for detailed signing information and keystore management.
 
 ## Project Structure
 ```
@@ -85,6 +101,11 @@ docs_server.py                   # Documentation server
 ```
 
 ## Recent Changes
+- 2025-11-01: **Signed release build configuration added**
+  - Configured app signing in build.gradle
+  - Created automated build script (build_signed_apk.sh)
+  - Added signing documentation (README_SIGNING.md)
+  - Installed Java JDK and Android tools in Replit
 - 2025-10-12: Initial setup and UML documentation created
 - 2025-10-12: GitHub Actions workflow configured
 - 2025-10-12: Documentation server implemented
@@ -113,6 +134,7 @@ docs_server.py                   # Documentation server
 ## Next Steps (if user requests)
 1. Customize AdMob IDs with user's own credentials
 2. Modify web app URL to point to different application
-3. Add signing configuration for release builds
+3. ✅ ~~Add signing configuration for release builds~~ (COMPLETED)
 4. Customize app branding (icon, name, colors)
 5. Add more features to the Android wrapper
+6. Upload signed APK to Google Play Console

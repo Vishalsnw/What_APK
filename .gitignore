@@ -1,0 +1,41 @@
+# Keystores - NEVER commit these!
+*.jks
+*.keystore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# APK files
+*.apk
+*.ap_
+*.aab
+
+# Build outputs
+VercelAdTWA/VercelAdTWA/app/build/
+VercelAdTWA/VercelAdTWA/build/
+VercelAdTWA/VercelAdTWA/.gradle/
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

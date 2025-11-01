@@ -1,12 +1,17 @@
 package com.whatsorder.twa
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdRequest
@@ -48,7 +53,44 @@ class MainActivity : AppCompatActivity() {
         try {
             // Configure WebView for TWA-like experience
             webView = findViewById(R.id.webview)
-            webView.webViewClient = WebViewClient()
+            
+            // Custom WebViewClient to handle external URL schemes
+            webView.webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                    val url = request?.url?.toString() ?: return false
+                    
+                    return when {
+                        // Handle WhatsApp URLs
+                        url.startsWith("whatsapp://") -> {
+                            openExternalApp(url, "com.whatsapp")
+                            true
+                        }
+                        // Handle tel: URLs
+                        url.startsWith("tel:") -> {
+                            openExternalApp(url, null)
+                            true
+                        }
+                        // Handle mailto: URLs
+                        url.startsWith("mailto:") -> {
+                            openExternalApp(url, null)
+                            true
+                        }
+                        // Handle other app schemes
+                        url.startsWith("intent://") || 
+                        url.startsWith("market://") ||
+                        url.startsWith("sms:") -> {
+                            openExternalApp(url, null)
+                            true
+                        }
+                        // Load http/https URLs in WebView
+                        url.startsWith("http://") || url.startsWith("https://") -> {
+                            view?.loadUrl(url)
+                            false
+                        }
+                        else -> false
+                    }
+                }
+            }
             
             val webSettings: WebSettings = webView.settings
             webSettings.javaScriptEnabled = true
@@ -77,6 +119,43 @@ class MainActivity : AppCompatActivity() {
             })
         } catch (e: Exception) {
             Log.e("MainActivity", "Error configuring WebView", e)
+        }
+    }
+    
+    private fun openExternalApp(url: String, packageName: String?) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            
+            // If package name is provided, try to open specific app
+            if (packageName != null) {
+                intent.setPackage(packageName)
+            }
+            
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            // If the specific app is not installed, try without package restriction
+            try {
+                if (packageName != null) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
+                } else {
+                    throw e
+                }
+            } catch (ex: Exception) {
+                Log.e("MainActivity", "Cannot open URL: $url", ex)
+                Toast.makeText(
+                    this,
+                    "Required app is not installed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error opening external app", e)
+            Toast.makeText(
+                this,
+                "Cannot open link",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
     

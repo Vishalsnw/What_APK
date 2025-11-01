@@ -18,9 +18,9 @@ android {
     signingConfigs {
         release {
             storeFile file("release-keystore.jks")
-            storePassword "whatsorder123"
-            keyAlias "whatsorder-twa"
-            keyPassword "whatsorder123"
+            storePassword "Apache@25"
+            keyAlias "myalias5"
+            keyPassword "Apache@25"
         }
     }
 

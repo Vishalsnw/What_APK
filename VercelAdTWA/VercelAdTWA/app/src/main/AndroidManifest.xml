@@ -16,10 +16,10 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="35">
 
-        <!-- AdMob App ID -->
+        <!-- AdMob App ID - Using test ID for development -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5538218540896625~1234567890"/>
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
 
         <!-- Launcher Activity with Splash Screen -->
         <activity

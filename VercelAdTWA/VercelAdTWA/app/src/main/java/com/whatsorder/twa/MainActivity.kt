@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             // Create and configure the banner ad
             adView = AdView(this)
             adView.setAdSize(AdSize.BANNER)
-            adView.adUnitId = "ca-app-pub-5538218540896625/8498698237"
+            adView.adUnitId = "ca-app-pub-3940256099942544/6300978111" // Google test banner ad unit
             
             // Add the banner ad to the layout
             val adContainer = findViewById<LinearLayout>(R.id.ad_container)

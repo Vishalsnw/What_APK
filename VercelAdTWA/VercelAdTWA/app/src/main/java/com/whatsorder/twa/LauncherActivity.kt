@@ -52,7 +52,7 @@ class LauncherActivity : AppCompatActivity() {
         
         InterstitialAd.load(
             this,
-            "ca-app-pub-5538218540896625/8673958054",
+            "ca-app-pub-3940256099942544/1033173712", // Google test interstitial ad unit
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {

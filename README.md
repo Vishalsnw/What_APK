@@ -14,6 +14,9 @@ A Trusted Web Activity (TWA) Android application that wraps the WhatsOrder web a
   - Banner ads in main activity
 - ⬅️ **Back Navigation** support within WebView
 - 🔄 **Lifecycle Management** for ads and WebView
+- 🔗 **WhatsApp Sharing Support** - Share links directly to WhatsApp
+- 📞 **External App Integration** - Handles tel:, mailto:, and other URL schemes
+- 📦 **AAB Support** - Build Android App Bundles for Play Store
 
 ## 📊 UML Documentation
 

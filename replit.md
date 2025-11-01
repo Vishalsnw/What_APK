@@ -45,8 +45,8 @@ A Python documentation server runs on port 5000 to display:
 
 Access it via the webview panel or at the Replit URL.
 
-### Building APKs
-**You can now build signed release APKs directly in Replit!**
+### Building APKs & AABs
+**You can now build signed release APKs and AABs directly in Replit!**
 
 **Quick Build (Recommended)**:
 ```bash
@@ -55,20 +55,26 @@ bash build_signed_apk.sh
 
 This will:
 - Create a signing keystore automatically
-- Build a signed release APK ready for distribution
-- Output the APK location
+- Build signed release APK and/or AAB
+- Give you options to build APK, AAB, or both
+- Output the file locations
+
+**What's the difference?**
+- **APK**: For direct installation, testing, sideloading
+- **AAB**: For uploading to Google Play Store (required by Play Store)
 
 **Alternative build methods**:
 1. **Manual build**:
    ```bash
    cd VercelAdTWA/VercelAdTWA
    chmod +x gradlew
-   ./gradlew assembleRelease
+   ./gradlew assembleRelease  # Build APK
+   ./gradlew bundleRelease    # Build AAB
    ```
 
 2. **GitHub Actions** (automated):
    - Push code to GitHub
-   - GitHub Actions builds APKs automatically
+   - GitHub Actions builds APK + AAB automatically
    - Download from Actions artifacts
 
 3. **Debug build**:
@@ -76,7 +82,11 @@ This will:
    bash build_apk.sh
    ```
 
-**Note**: See `README_SIGNING.md` for detailed signing information and keystore management.
+**Documentation**:
+- Signing: `README_SIGNING.md`
+- GitHub Actions: `GITHUB_ACTIONS_SETUP.md`
+- AdMob Setup: `ADMOB_SETUP.md`
+- Quick Start: `QUICK_START.md`
 
 ## Project Structure
 ```
@@ -101,13 +111,18 @@ docs_server.py                   # Documentation server
 ```
 
 ## Recent Changes
-- 2025-11-01: **Signed release build configuration added**
-  - Configured app signing in build.gradle
-  - Created automated build script (build_signed_apk.sh)
-  - Added signing documentation (README_SIGNING.md)
-  - Installed Java JDK and Android tools in Replit
-  - Updated GitHub Actions workflow for signed APK builds
-  - Created GitHub Actions setup guide (GITHUB_ACTIONS_SETUP.md)
+- 2025-11-01: **Major Updates - Signed Release, WhatsApp Sharing, AAB Support**
+  - ✅ Fixed WhatsApp sharing from WebView (handles whatsapp://, tel:, mailto: URLs)
+  - ✅ Added AAB (Android App Bundle) build support for Play Store
+  - ✅ Configured app signing in build.gradle
+  - ✅ Created automated build script supporting both APK and AAB
+  - ✅ Added comprehensive documentation:
+    - README_SIGNING.md (signing guide)
+    - GITHUB_ACTIONS_SETUP.md (CI/CD setup)
+    - ADMOB_SETUP.md (AdMob configuration)
+    - QUICK_START.md (quick start guide)
+  - ✅ Installed Java JDK and Android tools in Replit
+  - ✅ Updated GitHub Actions workflow for APK + AAB builds
 - 2025-10-12: Initial setup and UML documentation created
 - 2025-10-12: GitHub Actions workflow configured
 - 2025-10-12: Documentation server implemented

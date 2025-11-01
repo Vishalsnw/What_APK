@@ -106,6 +106,8 @@ docs_server.py                   # Documentation server
   - Created automated build script (build_signed_apk.sh)
   - Added signing documentation (README_SIGNING.md)
   - Installed Java JDK and Android tools in Replit
+  - Updated GitHub Actions workflow for signed APK builds
+  - Created GitHub Actions setup guide (GITHUB_ACTIONS_SETUP.md)
 - 2025-10-12: Initial setup and UML documentation created
 - 2025-10-12: GitHub Actions workflow configured
 - 2025-10-12: Documentation server implemented

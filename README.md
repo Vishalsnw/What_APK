@@ -66,7 +66,7 @@ VercelAdTWA/VercelAdTWA/
 
 ### Option 1: Using GitHub Actions (Recommended) ✅
 
-This project includes a **verified and tested** GitHub Actions workflow that automatically builds the APK:
+This project includes a **verified and tested** GitHub Actions workflow that automatically builds signed release APKs:
 
 1. **Push to GitHub**: Push this code to a GitHub repository
 2. **Automatic Build**: The workflow triggers on push/PR to main/master/develop branches
@@ -75,16 +75,36 @@ This project includes a **verified and tested** GitHub Actions workflow that aut
 
 The workflow builds both:
 - `app-debug.apk` - Debug version for testing
-- `app-release-unsigned.apk` - Release version (needs signing)
+- `app-release.apk` - **Signed release version ready for distribution** 🎉
 
 **What the workflow does:**
 - Sets up JDK 17 with Gradle caching
-- Installs Android SDK (platform-tools, API 34, build-tools 34.0.0)
+- Installs Android SDK (platform-tools, API 35, build-tools 35.0.0)
 - Accepts Android SDK licenses
-- Builds debug and release APKs
-- Uploads artifacts with 30-day retention
+- Creates/uses release keystore for signing
+- Builds debug and **signed release** APKs
+- Uploads artifacts (30 days for debug, 90 days for release)
+- Creates GitHub releases on tagged commits
 
-### Option 2: Local Build (Requires Android SDK)
+**For production signing:** See [GITHUB_ACTIONS_SETUP.md](./GITHUB_ACTIONS_SETUP.md) to configure GitHub Secrets for consistent signing.
+
+### Option 2: Replit Quick Build (New!) 🚀
+
+**Build signed release APKs directly in Replit:**
+
+```bash
+# Quick signed release build
+bash build_signed_apk.sh
+```
+
+This script will:
+- Create a release keystore automatically
+- Build a signed release APK
+- Output the APK location
+
+See [README_SIGNING.md](./README_SIGNING.md) for detailed signing information.
+
+### Option 3: Local Build (Requires Android SDK)
 
 If you have Android SDK installed locally:
 
@@ -98,7 +118,7 @@ chmod +x gradlew
 # Build debug APK
 ./gradlew assembleDebug
 
-# Build release APK
+# Build signed release APK
 ./gradlew assembleRelease
 
 # Clean build
@@ -107,21 +127,16 @@ chmod +x gradlew
 
 **Output Locations:**
 - Debug: `app/build/outputs/apk/debug/app-debug.apk`
-- Release: `app/build/outputs/apk/release/app-release-unsigned.apk`
+- Release: `app/build/outputs/apk/release/app-release.apk` (signed)
 
-### Option 3: Replit Environment Setup
+### Option 4: Export to Android Studio
 
-Building Android APKs directly in Replit is challenging due to Android SDK size. Instead:
+For advanced development:
 
-1. **Use this Replit for**:
-   - Code editing and collaboration
-   - Documentation and UML reference
-   - Version control
-
-2. **Build APKs via**:
-   - GitHub Actions (automatic CI/CD)
-   - Export to local machine with Android Studio
-   - Use cloud build services (Expo EAS for React Native alternatives)
+1. Download/clone this repository
+2. Open in Android Studio
+3. Build using IDE tools
+4. Access advanced debugging and profiling features
 
 ## 📦 Installing the APK
 

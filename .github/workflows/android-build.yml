@@ -44,9 +44,39 @@ jobs:
         cd VercelAdTWA/VercelAdTWA
         ./gradlew assembleDebug --stacktrace
     
-    - name: Build Release APK (unsigned)
+    # Create keystore from secret or generate a new one
+    - name: Setup Release Keystore
+      run: |
+        cd VercelAdTWA/VercelAdTWA/app
+        if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+          echo "Using keystore from secrets..."
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release-keystore.jks
+        else
+          echo "Generating new keystore for this build..."
+          keytool -genkey -v \
+            -keystore release-keystore.jks \
+            -alias whatsorder-twa \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass whatsorder123 \
+            -keypass whatsorder123 \
+            -dname "CN=WhatsOrder, OU=Development, O=WhatsOrder, L=Unknown, ST=Unknown, C=US"
+        fi
+    
+    - name: Build Signed Release APK
+      env:
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || 'whatsorder123' }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS || 'whatsorder-twa' }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'whatsorder123' }}
       run: |
         cd VercelAdTWA/VercelAdTWA
+        # Update build.gradle to use environment variables if secrets are set
+        if [ -n "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+          sed -i "s/storePassword \".*\"/storePassword System.getenv(\"KEYSTORE_PASSWORD\")/" app/build.gradle
+          sed -i "s/keyAlias \".*\"/keyAlias System.getenv(\"KEY_ALIAS\")/" app/build.gradle
+          sed -i "s/keyPassword \".*\"/keyPassword System.getenv(\"KEY_PASSWORD\")/" app/build.gradle
+        fi
         ./gradlew assembleRelease --stacktrace
     
     - name: Upload Debug APK
@@ -56,12 +86,26 @@ jobs:
         path: VercelAdTWA/VercelAdTWA/app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
     
-    - name: Upload Release APK
+    - name: Upload Signed Release APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-release-unsigned
-        path: VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release-unsigned.apk
-        retention-days: 30
+        name: app-release-signed
+        path: VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk
+        retention-days: 90
+    
+    - name: Get APK Info
+      run: |
+        echo "=== Build Complete ==="
+        echo "Debug APK:"
+        ls -lh VercelAdTWA/VercelAdTWA/app/build/outputs/apk/debug/app-debug.apk || echo "Not found"
+        echo ""
+        echo "Release APK (Signed):"
+        ls -lh VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk || echo "Not found"
+        echo ""
+        if command -v apksigner &> /dev/null; then
+          echo "=== Verifying APK Signature ==="
+          apksigner verify --verbose VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk || true
+        fi
     
     - name: Create Release (on tag)
       if: startsWith(github.ref, 'refs/tags/')
@@ -69,6 +113,16 @@ jobs:
       with:
         files: |
           VercelAdTWA/VercelAdTWA/app/build/outputs/apk/debug/app-debug.apk
-          VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release-unsigned.apk
+          VercelAdTWA/VercelAdTWA/app/build/outputs/apk/release/app-release.apk
+        body: |
+          ## WhatsOrder TWA Release
+          
+          ### Files
+          - `app-debug.apk` - Debug build for testing
+          - `app-release.apk` - Signed release build for distribution
+          
+          ### Installation
+          Download the APK and install on your Android device.
+          You may need to enable "Install from unknown sources" in your device settings.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

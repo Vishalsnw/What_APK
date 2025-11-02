@@ -157,6 +157,13 @@ class MainActivity : AppCompatActivity() {
             webSettings.useWideViewPort = true
             webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             
+            // Enable cookies and ensure they persist
+            val cookieManager = android.webkit.CookieManager.getInstance()
+            cookieManager.setAcceptCookie(true)
+            
+            // Set cache mode for optimal data persistence
+            webSettings.cacheMode = WebSettings.LOAD_DEFAULT
+            
             // Load the web app
             webView.loadUrl("https://whats-order-osr3.vercel.app/dashboard/")
             
@@ -221,6 +228,8 @@ class MainActivity : AppCompatActivity() {
             if (::webView.isInitialized) {
                 webView.onPause()
             }
+            // Flush cookies to ensure session data is saved
+            android.webkit.CookieManager.getInstance().flush()
         } catch (e: Exception) {
             Log.e("MainActivity", "Error in onPause", e)
         }
@@ -243,6 +252,9 @@ class MainActivity : AppCompatActivity() {
     
     override fun onDestroy() {
         try {
+            // Flush cookies before destroying to ensure all data is saved
+            android.webkit.CookieManager.getInstance().flush()
+            
             if (::adView.isInitialized) {
                 adView.destroy()
             }

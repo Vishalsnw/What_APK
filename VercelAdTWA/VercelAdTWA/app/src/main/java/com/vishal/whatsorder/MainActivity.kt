@@ -1,11 +1,14 @@
 package com.vishal.whatsorder
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -13,6 +16,8 @@ import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -23,10 +28,37 @@ class MainActivity : AppCompatActivity() {
     
     private lateinit var adView: AdView
     private lateinit var webView: WebView
+    private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
+    private lateinit var fileChooserLauncher: ActivityResultLauncher<Intent>
     
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Initialize file chooser launcher
+        fileChooserLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                val uris = if (data?.clipData != null) {
+                    // Multiple files selected
+                    val clipData = data.clipData!!
+                    Array(clipData.itemCount) { i ->
+                        clipData.getItemAt(i).uri
+                    }
+                } else if (data?.data != null) {
+                    // Single file selected
+                    arrayOf(data.data!!)
+                } else {
+                    null
+                }
+                fileUploadCallback?.onReceiveValue(uris)
+            } else {
+                fileUploadCallback?.onReceiveValue(null)
+            }
+            fileUploadCallback = null
+        }
         
         try {
             setContentView(R.layout.activity_main)
@@ -53,6 +85,28 @@ class MainActivity : AppCompatActivity() {
         try {
             // Configure WebView for TWA-like experience
             webView = findViewById(R.id.webview)
+            
+            // Add WebChromeClient to handle file chooser
+            webView.webChromeClient = object : WebChromeClient() {
+                override fun onShowFileChooser(
+                    webView: WebView?,
+                    filePathCallback: ValueCallback<Array<Uri>>?,
+                    fileChooserParams: FileChooserParams?
+                ): Boolean {
+                    fileUploadCallback?.onReceiveValue(null)
+                    fileUploadCallback = filePathCallback
+                    
+                    val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                        type = "image/*"
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                    }
+                    
+                    val chooserIntent = Intent.createChooser(intent, "Select Image")
+                    fileChooserLauncher.launch(chooserIntent)
+                    return true
+                }
+            }
             
             // Custom WebViewClient to handle external URL schemes
             webView.webViewClient = object : WebViewClient() {

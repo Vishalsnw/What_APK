@@ -14,16 +14,20 @@ This is an Android TWA (Trusted Web Activity) project that wraps a web applicati
 - ✅ GitHub Actions workflow for automated APK builds
 - ✅ Comprehensive README with build instructions
 - ✅ Documentation server running on port 5000
-- ✅ **NEW:** Signed release APK build configuration
-- ✅ **NEW:** Java JDK and Android tools installed
-- ✅ **NEW:** Automated build script for signed releases
+- ✅ Signed release APK build configuration
+- ✅ Java JDK and Android tools installed
+- ✅ Automated build script for signed releases
+- ✅ **LATEST (Nov 2, 2025):** Package name changed to com.vishal.whatsorder
+- ✅ **LATEST (Nov 2, 2025):** Version code 8 for Google Play
+- ✅ **LATEST (Nov 2, 2025):** Image upload from gallery support
+- ✅ **LATEST (Nov 2, 2025):** App icon display issue fixed
 
 ## Architecture
 ### Components
 1. **LauncherActivity**: Splash screen with interstitial ad (3s timeout)
-2. **MainActivity**: Main WebView with banner ad integration
+2. **MainActivity**: Main WebView with banner ad integration and file upload support
 3. **AdMob Integration**: Interstitial and banner ads
-4. **WebView**: Displays the WhatsOrder web application
+4. **WebView**: Displays the WhatsOrder web application with full image upload capability
 
 ### Technical Stack
 - **Language**: Kotlin
@@ -93,7 +97,7 @@ This will:
 VercelAdTWA/VercelAdTWA/         # Android project root
 ├── app/
 │   ├── src/main/
-│   │   ├── java/com/whatsorder/twa/
+│   │   ├── java/com/vishal/whatsorder/
 │   │   │   ├── LauncherActivity.kt
 │   │   │   └── MainActivity.kt
 │   │   ├── res/                 # Resources

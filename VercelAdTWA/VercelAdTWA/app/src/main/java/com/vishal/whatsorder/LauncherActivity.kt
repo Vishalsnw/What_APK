@@ -1,4 +1,4 @@
-package com.whatsorder.twa
+package com.vishal.whatsorder
 
 import android.content.Intent
 import android.os.Bundle

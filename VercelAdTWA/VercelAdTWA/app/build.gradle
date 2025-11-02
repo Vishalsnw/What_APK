@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.whatsorder.twa'
+    namespace 'com.vishal.whatsorder'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.whatsorder.twa"
+        applicationId "com.vishal.whatsorder"
         minSdk 21
         targetSdk 35
         versionCode 8

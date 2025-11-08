@@ -2,3 +2,5 @@ markdown==3.5.1
 markdown
 flask
 markdown
+flask
+markdown

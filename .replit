@@ -1,4 +1,4 @@
-modules = ["bash", "python-3.11", "java-graalvm22.3"]
+modules = ["python-3.12", "bash"]
 [agent]
 expertMode = true
 
@@ -37,3 +37,7 @@ externalPort = 80
 [[ports]]
 localPort = 40203
 externalPort = 3000
+
+[[ports]]
+localPort = 41733
+externalPort = 3001

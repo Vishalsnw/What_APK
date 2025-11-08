@@ -23,6 +23,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 
 class MainActivity : AppCompatActivity() {
     
@@ -63,8 +64,14 @@ class MainActivity : AppCompatActivity() {
         try {
             setContentView(R.layout.activity_main)
             
-            // Initialize Mobile Ads SDK
+            // Initialize Mobile Ads SDK with production configuration
             MobileAds.initialize(this) {}
+            
+            // Configure for production ads (no test devices)
+            val requestConfiguration = RequestConfiguration.Builder()
+                .setTestDeviceIds(emptyList())
+                .build()
+            MobileAds.setRequestConfiguration(requestConfiguration)
             
             // Create and configure the banner ad
             adView = AdView(this)

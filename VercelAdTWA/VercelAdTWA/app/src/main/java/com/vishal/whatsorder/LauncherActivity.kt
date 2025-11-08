@@ -11,6 +11,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
@@ -33,8 +34,14 @@ class LauncherActivity : AppCompatActivity() {
         try {
             setContentView(R.layout.activity_launcher)
             
-            // Initialize Mobile Ads SDK
+            // Initialize Mobile Ads SDK with production configuration
             MobileAds.initialize(this) {}
+            
+            // Configure for production ads (no test devices)
+            val requestConfiguration = RequestConfiguration.Builder()
+                .setTestDeviceIds(emptyList())
+                .build()
+            MobileAds.setRequestConfiguration(requestConfiguration)
             
             // Load the interstitial ad
             loadInterstitialAd()
